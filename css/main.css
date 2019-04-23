@@ -1765,7 +1765,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #25ff73;
+  background: #f4f;
 }
 .feed-link,
 .chat {
@@ -2778,9 +2778,9 @@ ul.breadcrumb li+li:last-child {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 0px) {
   body {
-    background-image: url("/images/timg.jpg");
+    background-image: url("/images/zzz.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: 50% 50%;
