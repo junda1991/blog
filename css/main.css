@@ -1808,7 +1808,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #e8a7df;
+  background: #5d57ff;
 }
 .feed-link,
 .chat {
@@ -2827,9 +2827,7 @@ ul.breadcrumb li+li:last-child {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: 50% 50%;
-  }
-  #footer a {
-    color: #eee;
+    background-size: 100% 100%;
   }
 }
 .site-author-image {
