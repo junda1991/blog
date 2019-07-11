@@ -1,1 +1,990 @@
-<!DOCTYPE html><html class="theme-next pisces use-motion" lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"><link rel="stylesheet" href="/blog/css/main.css?v=7.1.0"><link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png?v=7.1.0"><link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png?v=7.1.0"><link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png?v=7.1.0"><link rel="mask-icon" href="/blog/images/logo.svg?v=7.1.0" color="#222"><script id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/blog/",scheme:"Pisces",version:"7.1.0",sidebar:{position:"left",display:"post",offset:12,onmobile:!1,dimmer:!1},back2top:!0,back2top_sidebar:!1,fancybox:!1,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script><script type="text/javascript" src="/js/src/custom.js"></script><meta name="description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上"><meta name="keywords" content="学习"><meta property="og:type" content="article"><meta property="og:title" content="Vmware虚拟机三种网络模式"><meta property="og:url" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/index.html"><meta property="og:site_name" content="Zhu Junda"><meta property="og:description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/1.png"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/2.png"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/3.png"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/h1.png"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/h2.png"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/66.png"><meta property="og:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/12.png"><meta property="og:updated_time" content="2019-04-26T16:13:07.093Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Vmware虚拟机三种网络模式"><meta name="twitter:description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上"><meta name="twitter:image" content="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/1.png"><link rel="canonical" href="http://yoursite.com/2019/04/26/Vmware虚拟机三种网络模式/"><script id="page.configurations">CONFIG.page={sidebar:""}</script><title>Vmware虚拟机三种网络模式 | Zhu Junda</title><noscript><style>.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.use-motion .logo-line-before i{left:initial}.use-motion .logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN"><link rel="stylesheet" href="/dist/APlayer.min.css"><div id="aplayer"></div><script type="text/javascript" src="/dist/APlayer.min.js"></script><script type="text/javascript" src="/dist/music.js"></script><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/blog/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">Zhu Junda</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">想成为你任何时候回头都值得喜欢的人.</p></div><div class="site-nav-toggle"> <button aria-label="切换导航栏"><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-首页"><a href="/blog/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-标签"><a href="/blog/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签</a></li><li class="menu-item menu-item-分类"><a href="/blog/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类</a></li><li class="menu-item menu-item-文章"><a href="/blog/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>文章</a></li><li class="menu-item menu-item-关于"><a href="/blog/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li></ul></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="http://yoursite.com/blog/2019/04/26/Vmware虚拟机三种网络模式/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="name" content="Zhu Junda"><meta itemprop="description" content="或许多年后你再听到我的名字会笑着说不认识."><meta itemprop="image" content="/blog/images/tt.jpg"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="Zhu Junda"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Vmware虚拟机三种网络模式</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建时间：2019-04-26 22:42:43" itemprop="dateCreated datePublished" datetime="2019-04-26T22:42:43+08:00">2019-04-26</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于</span> <time title="修改时间：2019-04-27 00:13:07" itemprop="dateModified" datetime="2019-04-27T00:13:07+08:00">2019-04-27</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/vmware/" itemprop="url" rel="index"><span itemprop="name">vmware</span></a></span></span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i> 阅读次数：<span class="busuanzi-value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body" itemprop="articleBody"><p>vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式).</p><h3 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a><font color="red">桥接模式</font></h3><blockquote><p>主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.<br>桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/1.png" alt></p></blockquote><h3 id="网络地址转换模式"><a href="#网络地址转换模式" class="headerlink" title="网络地址转换模式"></a><font color="red">网络地址转换模式</font></h3><blockquote><p>主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上，这样就实现了虚拟机联网.<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/2.png" alt></p></blockquote><h3 id="仅主机模式"><a href="#仅主机模式" class="headerlink" title="仅主机模式"></a><font color="red">仅主机模式</font></h3><blockquote><p>Host-Only模式其实就是NAT模式去除了虚拟NAT设备，然后使用VMware Network Adapter VMnet1虚拟网卡连接VMnet1虚拟交换机来与虚拟机通信的，Host-Only模式将虚拟机与外网隔开，使得虚拟机成为一个独立的系统，只与主机相互通讯.<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/3.png" alt></p></blockquote><h2 id="我虚拟使用的是NAT模式"><a href="#我虚拟使用的是NAT模式" class="headerlink" title="我虚拟使用的是NAT模式"></a>我虚拟使用的是NAT模式</h2><p>第一步<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg" alt><br>第二步<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg" alt><br>第三步<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg" alt><br>第四步<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg" alt></p><p>可能出现还是无法访问网络<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/h1.png" alt><br>需要dhclient 申请ip地址 使用 sudo dhclient<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/h2.png" alt></p><p>还可能出现每次都挂起 都需要重新获取ip 可以设置如下<br>可以修改vi /etc/network/interfaces<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/66.png" alt></p><p>如果还上不了网<br>设定一个网卡IP：ifconfig eth1 192.168.1.10 netmask 255.255.255.0</p><p>重启网卡使设定生效：sudo /etc/init.d/networking restart<br><img src="/2019/04/26/Vmware虚拟机三种网络模式/12.png" alt></p></div><div><div id="reward-container"><div></div> <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';"> 打赏</button><div id="qr" style="display:none"><div style="display:inline-block"> <img src="/blog/images/weixin.jpg" alt="Zhu Junda 微信支付"><p>微信支付</p></div></div></div></div><footer class="post-footer"><div class="post-tags"> <a href="/blog/tags/学习/" rel="tag"># 学习</a></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/blog/2019/04/23/我的第一篇文章/" rel="next" title="善待朋友，珍惜拥有"><i class="fa fa-chevron-left"></i> 善待朋友，珍惜拥有</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/blog/2019/05/01/docker学习笔记/" rel="prev" title="docker学习笔记">docker学习笔记<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><div class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/blog/images/tt.jpg" alt="Zhu Junda"><p class="site-author-name" itemprop="name">Zhu Junda</p><div class="site-description motion-element" itemprop="description">或许多年后你再听到我的名字会笑着说不认识.</div></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/blog/archives"><span class="site-state-item-count">3</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/blog/categories/"><span class="site-state-item-count">2</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/blog/tags/"><span class="site-state-item-count">3</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/junda1991" title="GitHub &rarr; https://github.com/junda1991" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="https://weibo.com/u/5770402091" title="Weibo &rarr; https://weibo.com/u/5770402091" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i> Weibo</a></span></div></div></div><div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#桥接模式"><span class="nav-number">1.</span> <span class="nav-text">桥接模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络地址转换模式"><span class="nav-number">2.</span> <span class="nav-text">网络地址转换模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仅主机模式"><span class="nav-number">3.</span> <span class="nav-text">仅主机模式</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#我虚拟使用的是NAT模式"><span class="nav-number"></span> <span class="nav-text">我虚拟使用的是NAT模式</span></a></li></div></div></div></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2019</span><span class="with-love" id="animate"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">Zhu Junda</span></div><div class="busuanzi-count"><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span class="post-meta-item-icon"><i class="fa fa-user"></i></span><span class="site-uv" title="总访客量"><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i></span><span class="site-pv" title="总访问量"><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script>"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script src="/blog/lib/jquery/index.js?v=2.1.3"></script><script src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script><script src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="/blog/js/utils.js?v=7.1.0"></script><script src="/blog/js/motion.js?v=7.1.0"></script><script src="/blog/js/affix.js?v=7.1.0"></script><script src="/blog/js/schemes/pisces.js?v=7.1.0"></script><script src="/blog/js/scrollspy.js?v=7.1.0"></script><script src="/blog/js/post-details.js?v=7.1.0"></script><script src="/blog/js/next-boot.js?v=7.1.0"></script><script type="text/javascript" src="/js/clicklove.js"></script><script type="text/javascript">var windowWidth=$(window).width();360<windowWidth&&document.write('<script type="text/javascript" src="/js/src/snow1.js"><\/script>')</script></body></html>
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/blog/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/blog/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/blog/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+<!-- 图片轮播js文件cdn -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-backstretch/2.0.4/jquery.backstretch.min.js"></script>
+
+<!-- 自定义的js文件 -->
+<script type="text/javascript" src="/js/src/custom.js"></script>
+
+
+
+  <meta name="description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上">
+<meta name="keywords" content="学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vmware虚拟机三种网络模式">
+<meta property="og:url" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/index.html">
+<meta property="og:site_name" content="Zhu Junda">
+<meta property="og:description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/2.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/3.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h1.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h2.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/66.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/12.png">
+<meta property="og:updated_time" content="2019-04-26T16:13:07.093Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vmware虚拟机三种网络模式">
+<meta name="twitter:description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上">
+<meta name="twitter:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Vmware虚拟机三种网络模式 | Zhu Junda</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <!-- 音频播放 -->
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/blog/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Zhu Junda</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">想成为你任何时候回头都值得喜欢的人.</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-首页">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/blog/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/blog/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-分类">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/blog/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-文章">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/blog/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>文章</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-关于">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/blog/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zhu Junda">
+      <meta itemprop="description" content="或许多年后你再听到我的名字会笑着说不认识.">
+      <meta itemprop="image" content="/blog/images/tt.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhu Junda">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Vmware虚拟机三种网络模式
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-26 22:42:43" itemprop="dateCreated datePublished" datetime="2019-04-26T22:42:43+08:00">2019-04-26</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-27 00:13:07" itemprop="dateModified" datetime="2019-04-27T00:13:07+08:00">2019-04-27</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/blog/categories/vmware/" itemprop="url" rel="index"><span itemprop="name">vmware</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式).</p>
+<h3 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a><font color="red">桥接模式</font></h3><blockquote>
+<p>主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.<br>桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png" alt></p>
+</blockquote>
+<h3 id="网络地址转换模式"><a href="#网络地址转换模式" class="headerlink" title="网络地址转换模式"></a><font color="red">网络地址转换模式</font></h3><blockquote>
+<p>主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上，这样就实现了虚拟机联网.<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/2.png" alt></p>
+</blockquote>
+<h3 id="仅主机模式"><a href="#仅主机模式" class="headerlink" title="仅主机模式"></a><font color="red">仅主机模式</font></h3><blockquote>
+<p>Host-Only模式其实就是NAT模式去除了虚拟NAT设备，然后使用VMware Network Adapter VMnet1虚拟网卡连接VMnet1虚拟交换机来与虚拟机通信的，Host-Only模式将虚拟机与外网隔开，使得虚拟机成为一个独立的系统，只与主机相互通讯.<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/3.png" alt></p>
+</blockquote>
+<h2 id="我虚拟使用的是NAT模式"><a href="#我虚拟使用的是NAT模式" class="headerlink" title="我虚拟使用的是NAT模式"></a>我虚拟使用的是NAT模式</h2><p>第一步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg" alt><br>第二步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg" alt><br>第三步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg" alt><br>第四步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg" alt></p>
+<p>可能出现还是无法访问网络<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h1.png" alt><br>需要dhclient 申请ip地址 使用 sudo dhclient<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h2.png" alt></p>
+<p>还可能出现每次都挂起 都需要重新获取ip 可以设置如下<br>可以修改vi /etc/network/interfaces<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/66.png" alt></p>
+<p>如果还上不了网<br>设定一个网卡IP：ifconfig eth1 192.168.1.10 netmask 255.255.255.0</p>
+<p>重启网卡使设定生效：sudo /etc/init.d/networking restart<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/12.png" alt></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div id="reward-container">
+  <div></div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/blog/images/weixin.jpg" alt="Zhu Junda 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/blog/tags/学习/" rel="tag"># 学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/blog/2019/04/23/我的第一篇文章/" rel="next" title="善待朋友，珍惜拥有">
+                <i class="fa fa-chevron-left"></i> 善待朋友，珍惜拥有
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/blog/2019/05/01/docker学习笔记/" rel="prev" title="docker学习笔记">
+                docker学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+    
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/blog/images/tt.jpg" alt="Zhu Junda">
+            
+              <p class="site-author-name" itemprop="name">Zhu Junda</p>
+              <div class="site-description motion-element" itemprop="description">或许多年后你再听到我的名字会笑着说不认识.</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/blog/archives">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/blog/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/blog/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/junda1991" title="GitHub &rarr; https://github.com/junda1991" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/u/5770402091" title="Weibo &rarr; https://weibo.com/u/5770402091" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+         
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#桥接模式"><span class="nav-number">1.</span> <span class="nav-text">桥接模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络地址转换模式"><span class="nav-number">2.</span> <span class="nav-text">网络地址转换模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仅主机模式"><span class="nav-number">3.</span> <span class="nav-text">仅主机模式</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#我虚拟使用的是NAT模式"><span class="nav-number"></span> <span class="nav-text">我虚拟使用的是NAT模式</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+  
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhu Junda</span>
+
+  
+
+  
+</div>
+<!--
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.1.0</div>
+
+
+
+
+-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/blog/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/blog/js/utils.js?v=7.1.0"></script>
+
+  <script src="/blog/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/blog/js/affix.js?v=7.1.0"></script>
+
+  <script src="/blog/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/blog/js/scrollspy.js?v=7.1.0"></script>
+<script src="/blog/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/blog/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
+
+<!-- 雪花特效 -->
+<script type="text/javascript">
+  var windowWidth = $(window).width();
+  if (windowWidth > 360) {
+    document.write('<script type="text/javascript" src="/js/src/snow1.js"><\/script>');
+  }
+</script>
+
+</body>
+</html>
