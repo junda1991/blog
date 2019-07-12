@@ -110,22 +110,22 @@
 <meta property="og:site_name" content="Zhu Junda">
 <meta property="og:description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/2.png">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/3.png">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h1.png">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h2.png">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/66.png">
-<meta property="og:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/12.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/2.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/3.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/h1.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/h2.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/66.png">
+<meta property="og:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/12.png">
 <meta property="og:updated_time" content="2019-04-26T16:13:07.093Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Vmware虚拟机三种网络模式">
 <meta name="twitter:description" content="vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式). 桥接模式 主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起  网络地址转换模式 主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上">
-<meta name="twitter:image" content="https://junda1991.github.io/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png">
+<meta name="twitter:image" content="https://junda1991.github.io/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png">
 
 
 
@@ -489,19 +489,19 @@
       
         <p>vmware为我们提供了三种网络工作模式，它们分别是：Bridged（桥接模式）、NAT（网络地址转换模式）、Host-Only（仅主机模式).</p>
 <h3 id="桥接模式"><a href="#桥接模式" class="headerlink" title="桥接模式"></a><font color="red">桥接模式</font></h3><blockquote>
-<p>主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.<br>桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png" alt></p>
+<p>主机网卡与虚拟机虚拟的网卡利用虚拟网桥进行通信.<br>桥接模式通过虚拟网桥把主机网卡和VMnet0（虚拟交换机）连接在一起<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/1.png" alt></p>
 </blockquote>
 <h3 id="网络地址转换模式"><a href="#网络地址转换模式" class="headerlink" title="网络地址转换模式"></a><font color="red">网络地址转换模式</font></h3><blockquote>
-<p>主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上，这样就实现了虚拟机联网.<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/2.png" alt></p>
+<p>主机网卡直接与虚拟NAT设备相连，然后虚拟NAT设备与虚拟DHCP服务器一起连接在虚拟交换机VMnet8上，这样就实现了虚拟机联网.<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/2.png" alt></p>
 </blockquote>
 <h3 id="仅主机模式"><a href="#仅主机模式" class="headerlink" title="仅主机模式"></a><font color="red">仅主机模式</font></h3><blockquote>
-<p>Host-Only模式其实就是NAT模式去除了虚拟NAT设备，然后使用VMware Network Adapter VMnet1虚拟网卡连接VMnet1虚拟交换机来与虚拟机通信的，Host-Only模式将虚拟机与外网隔开，使得虚拟机成为一个独立的系统，只与主机相互通讯.<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/3.png" alt></p>
+<p>Host-Only模式其实就是NAT模式去除了虚拟NAT设备，然后使用VMware Network Adapter VMnet1虚拟网卡连接VMnet1虚拟交换机来与虚拟机通信的，Host-Only模式将虚拟机与外网隔开，使得虚拟机成为一个独立的系统，只与主机相互通讯.<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/3.png" alt></p>
 </blockquote>
-<h2 id="我虚拟使用的是NAT模式"><a href="#我虚拟使用的是NAT模式" class="headerlink" title="我虚拟使用的是NAT模式"></a>我虚拟使用的是NAT模式</h2><p>第一步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg" alt><br>第二步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg" alt><br>第三步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg" alt><br>第四步<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg" alt></p>
-<p>可能出现还是无法访问网络<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h1.png" alt><br>需要dhclient 申请ip地址 使用 sudo dhclient<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/h2.png" alt></p>
-<p>还可能出现每次都挂起 都需要重新获取ip 可以设置如下<br>可以修改vi /etc/network/interfaces<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/66.png" alt></p>
+<h2 id="我虚拟使用的是NAT模式"><a href="#我虚拟使用的是NAT模式" class="headerlink" title="我虚拟使用的是NAT模式"></a>我虚拟使用的是NAT模式</h2><p>第一步<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/p1.jpg" alt><br>第二步<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/p2.jpg" alt><br>第三步<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/p3.jpg" alt><br>第四步<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/p4.jpg" alt></p>
+<p>可能出现还是无法访问网络<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/h1.png" alt><br>需要dhclient 申请ip地址 使用 sudo dhclient<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/h2.png" alt></p>
+<p>还可能出现每次都挂起 都需要重新获取ip 可以设置如下<br>可以修改vi /etc/network/interfaces<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/66.png" alt></p>
 <p>如果还上不了网<br>设定一个网卡IP：ifconfig eth1 192.168.1.10 netmask 255.255.255.0</p>
-<p>重启网卡使设定生效：sudo /etc/init.d/networking restart<br><img src="/blog/blog/2019/04/26/Vmware虚拟机三种网络模式/12.png" alt></p>
+<p>重启网卡使设定生效：sudo /etc/init.d/networking restart<br><img src="/blog/2019/04/26/Vmware虚拟机三种网络模式/12.png" alt></p>
 
       
     </div>
